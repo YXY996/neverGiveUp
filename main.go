@@ -10,3 +10,9 @@ func fib(a int)int {
 }
  return fib(a-1)+ fib(a-2)
 }
+
+func min(a,b int)int {
+if a<b{
+return a}
+return b 
+}
