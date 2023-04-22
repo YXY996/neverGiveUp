@@ -1,18 +1,23 @@
 package main
-import "fmt"
-func main(){
-   fmt.Println(fib(2))
+
+import (
+	"ginshop01/models"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
+	"github.com/gin-gonic/gin"
+	"html/template"
+)
+
+func main() {
+	r := gin.Default()
+	r.SetFuncMap(template.FuncMap{
+		"UnixToTime": models.UnixToTime,
+	})
+	r.LoadHTMLGlob("templates/**/*")
+	r.Static("/static", "./static")
+
+	store := cookie.NewStore([]byte("secret"))
+	r.Use(sessions.Sessions("mySession", store))
+
 }
 
-func fib(a int)int {
- if a==0 || a==1{
-   return 1
-}
- return fib(a-1)+ fib(a-2)
-}
-
-func min(a,b int)int {
-if a<b{
-return a}
-return b 
-}
