@@ -1,11 +1,12 @@
 package main
 
 import (
-	"ginshop01/models"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	"html/template"
+	"neverGiveUp/models"
+	"neverGiveUp/routers"
 )
 
 func main() {
@@ -19,5 +20,6 @@ func main() {
 	store := cookie.NewStore([]byte("secret"))
 	r.Use(sessions.Sessions("mySession", store))
 
+	routers.AdminRoutersInit(r)
+	r.Run(":9999")
 }
-
