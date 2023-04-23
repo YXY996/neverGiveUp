@@ -70,3 +70,64 @@ func (con ManagerController) DoAdd(c *gin.Context) {
 
 	con.Success(c, "增加管理员成功", "/admin/manager")
 }
+
+func (con ManagerController) Edit(c *gin.Context) {
+	id, err := models.Int(c.Query("id"))
+	if err != nil {
+		con.Error(c, "传入数据错误 ", "/admin/manager")
+	}
+	manager := models.Manager{Id: id}
+	//将查询结果赋值给manager
+	models.DB.Find(&manager)
+	roleList := []models.Role{}
+	models.DB.Find(&roleList)
+	c.HTML(http.StatusOK, "admin/manager/edit.html", gin.H{
+		"manager":  manager,
+		"roleList": roleList,
+	})
+}
+
+func (con ManagerController) DoEdit(c *gin.Context) {
+	id, err := models.Int(c.PostForm("id"))
+	if err != nil {
+		con.Error(c, "读取数据manager_id 失败", "/admin/manager")
+	}
+	role_id, err := models.Int(c.PostForm("role_id"))
+	if err != nil {
+		con.Error(c, "读取数据role_id 失败", "/admin/manager")
+	}
+
+	username := strings.Trim(c.PostForm("username"), " ")
+	password := strings.Trim(c.PostForm("password"), " ")
+	mobile := strings.Trim(c.PostForm("mobile"), " ")
+	//手机号码长度校验
+	if len(mobile) > 11 {
+		con.Error(c, "mobile长度不合法", "/admin/manager/edit?id="+models.String(id))
+		return
+	}
+	email := strings.Trim(c.PostForm("email"), " ")
+	manager := models.Manager{Id: id}
+	models.DB.Find(&manager)
+	manager.Username = username
+	//manager.Password = password
+	manager.Mobile = mobile
+	manager.Email = email
+	manager.RoleId = role_id
+
+	if password != "" {
+		//判断密码长度是否合法
+		if len(password) < 6 {
+			con.Error(c, "密码的长度不合法 密码长度不能小于6位", "/admin/manager/edit?id="+models.String(id))
+			return
+		}
+		//password 加密存储
+		manager.Password = models.Md5(password)
+	}
+	err = models.DB.Save(&manager).Error
+	if err != nil {
+		con.Error(c, "储存失败", "/admin/manager/edit?id="+models.String(id))
+		return
+	}
+	con.Success(c, "修改数据成功", "/admin/manager")
+
+}
