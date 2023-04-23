@@ -13,8 +13,9 @@ func main() {
 	r := gin.Default()
 	r.SetFuncMap(template.FuncMap{
 		"UnixToTime": models.UnixToTime,
+		"Str2Html":   models.Str2Html,
 	})
-	r.LoadHTMLGlob("templates/**/*")
+	r.LoadHTMLGlob("templates/**/**/*")
 	r.Static("/static", "./static")
 
 	store := cookie.NewStore([]byte("secret"))
