@@ -131,3 +131,14 @@ func (con ManagerController) DoEdit(c *gin.Context) {
 	con.Success(c, "修改数据成功", "/admin/manager")
 
 }
+
+func (con ManagerController) Delete(c *gin.Context) {
+	id, err := models.Int(c.Query("id"))
+	if err != nil {
+		con.Error(c, "传入数据错误", "/admin/manager")
+	} else {
+		manager := models.Manager{Id: id}
+		models.DB.Delete(&manager)
+		con.Success(c, "删除数据成功", "/admin/manager")
+	}
+}

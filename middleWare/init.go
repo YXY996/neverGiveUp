@@ -12,7 +12,6 @@ func InitMiddleWare(c *gin.Context) {
 	fmt.Println(time.Now())
 	fmt.Println(c.Request.URL)
 
-	c.Set("name", "yxy")
 	cCp := c.Copy()
 	go func() {
 		time.Sleep(2 * time.Second)
