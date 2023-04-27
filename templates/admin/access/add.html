@@ -31,7 +31,7 @@
                         <select name="module_id" id="module_id">
                             <option value="0">---顶级模块--</option>  
                             {{range $key,$value := .accessList}}
-                                <option value="{{$value.Id}}">{{$value.ModuleName}}</option>
+                                <option value="{{$value.Id}}">{{$value.ModuleName}}</option>  
                             {{end}}
                          </select>
                     </li>

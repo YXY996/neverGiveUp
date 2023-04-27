@@ -34,9 +34,12 @@
                         {{end}}
 
                     </td>
-                    <td>{{$value.ActionName}}</td>        
-                    <td>{{$value.Url}}</td>    
-                    <td> <span class="chSpanNum" data-id="{{$value.Id}}" data-table="access" data-field="sort">{{$value.Sort}}</span></td>    
+                    <td> {{$value.ActionName}}</td>
+                    <td>{{$value.Url}}</td>
+                    <td>
+                        <span class="chSpanNum" data-id="{{$value.Id}}" data-table="access" data-field="sort">{{$value.Sort}}</span>
+                    </td>
+
                     <td>{{$value.Description}}</td>    
                     <td class="text-center">
                         <a href="/admin/access/edit?id={{$value.Id}}">修改</a> 
@@ -49,6 +52,7 @@
                     <tr>
                         <td> --{{$v.ModuleName}}</td>               
                         <td>
+
                             {{if eq $v.Type 1}}
                             模块
                             {{else if eq $v.Type 2}}
@@ -58,7 +62,7 @@
                             {{end}}
                         </td>
                         <td>{{$v.ActionName}}</td>        
-                        <td>{{$v.Url}}</td>    
+                        <td><span class="chSpanPath" data-id="{{$v.Id}}" data-table="access" data-field="url">{{$v.Url}}</span></td>
                         <td><span class="chSpanNum" data-id="{{$v.Id}}" data-table="access" data-field="sort">{{$v.Sort}}</span></td>    
                         <td>{{$v.Description}}</td>    
                         <td class="text-center">

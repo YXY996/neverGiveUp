@@ -7,10 +7,13 @@ import (
 )
 
 func AdminRoutersInit(r *gin.Engine) {
-	adminRouters := r.Group("/admin", middleWare.InitMiddleWare)
+	adminRouters := r.Group("/admin", middleWare.InitAuthMiddleWare)
 	{
 		adminRouters.GET("/", admin.MainController{}.Index)
 		adminRouters.GET("/welcome", admin.MainController{}.Welcome)
+		adminRouters.GET("/changeStatus", admin.MainController{}.ChangeStatus)
+		adminRouters.GET("/changeNum", admin.MainController{}.ChangeNum)
+		adminRouters.GET("/changePath", admin.MainController{}.ChangePath)
 
 		adminRouters.GET("/login", admin.LoginController{}.Login)
 		adminRouters.POST("/doLogin", admin.LoginController{}.DoLogin)
@@ -33,7 +36,9 @@ func AdminRoutersInit(r *gin.Engine) {
 
 		adminRouters.GET("/focus", admin.FocusController{}.Index)
 		adminRouters.GET("/focus/add", admin.FocusController{}.Add)
+		adminRouters.POST("/focus/doAdd", admin.FocusController{}.DoAdd)
 		adminRouters.GET("/focus/edit", admin.FocusController{}.Edit)
+		adminRouters.POST("/focus/doEdit", admin.FocusController{}.DoEdit)
 		adminRouters.GET("/focus/delete", admin.FocusController{}.Delete)
 
 		adminRouters.GET("/role", admin.RoleController{}.Index)
@@ -50,6 +55,7 @@ func AdminRoutersInit(r *gin.Engine) {
 		adminRouters.POST("/access/doAdd", admin.AccessController{}.DoAdd)
 		adminRouters.GET("/access/edit", admin.AccessController{}.Edit)
 		adminRouters.POST("/access/doEdit", admin.AccessController{}.DoEdit)
+		adminRouters.GET("/access/delete", admin.AccessController{}.Delete)
 	}
 
 }
