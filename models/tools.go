@@ -7,6 +7,7 @@ import (
 	"github.com/pkg/errors"
 	"html/template"
 	"io"
+	"log"
 	"os"
 	"path"
 	"strconv"
@@ -107,7 +108,7 @@ func UploadImg(c *gin.Context, picName string) (string, error) {
 	day := GetDay()
 	dir := "./static/upload/" + day
 
-	err1 := os.MkdirAll(dir, 0666)
+	err1 := os.MkdirAll(dir, 0777)
 	if err1 != nil {
 		fmt.Println(err1)
 		return "", err1
@@ -118,7 +119,12 @@ func UploadImg(c *gin.Context, picName string) (string, error) {
 
 	// 5、执行上传
 	dst := path.Join(dir, fileName)
-	c.SaveUploadedFile(file, dst)
+	fmt.Printf("fileName = %v\n", fileName)
+	fmt.Printf("dst= %v\n", dst)
+	err = c.SaveUploadedFile(file, dst)
+	if err != nil {
+		log.Printf("err : %v\n", err)
+		return "", err
+	}
 	return dst, nil
-
 }
