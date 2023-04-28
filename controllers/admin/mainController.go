@@ -23,6 +23,7 @@ func (con MainController) Index(c *gin.Context) {
 		json.Unmarshal([]byte(userInfoStr), &userInfoStruct)
 		//获得所有权限
 		accessList := []models.Access{}
+		//排序
 		models.DB.Where("module_id=?", 0).Preload("AccessItem", func(db *gorm.DB) *gorm.DB {
 			return db.Order("access.sort DESC")
 		}).Order("sort desc").Find(&accessList)

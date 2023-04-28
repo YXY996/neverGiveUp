@@ -22,5 +22,6 @@ func main() {
 	r.Use(sessions.Sessions("mySession", store))
 
 	routers.AdminRoutersInit(r)
+	routers.DefaultRoutersInit(r)
 	r.Run(":9999")
 }
