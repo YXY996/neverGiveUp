@@ -864,7 +864,7 @@ button[data-cmd="insertAll"] {
     position: relative !important;
     top: 3.2px !important; }
 
-/* Hide the browser's defaultTool checkbox */
+/* Hide the browser's default checkbox */
 .checkbox-container input {
   position: absolute;
   opacity: 0;

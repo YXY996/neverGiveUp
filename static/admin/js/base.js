@@ -12,7 +12,6 @@ var baseApp = {
 		this.resizeIframe()
 		this.changeStatus()
 		this.changeNum()
-		this.changePath()
 	},
 	initAside: function () {
 		$('.aside>li:nth-child(1) ul,.aside>li:nth-child(2) ul').hide()
@@ -34,9 +33,7 @@ var baseApp = {
 	changeStatus: function () {
 		$(".chStatus").click(function () {
 			var id = $(this).attr("data-id")
-			var table = $(this).attr("data-table")
-			var field = $(this).attr("data-field")
-			var el = $(this)
+		 
 			$.get("/admin/changeStatus", { id: id, table: table, field: field }, function (response) {
 				if (response.success) {
 					if (el.attr("src").indexOf("yes") != -1) {
@@ -85,7 +82,6 @@ var baseApp = {
 			var field = $(this).attr("data-field")
 			var num = $(this).html().trim()
 			var spanEl = $(this)
-			console.log(num)
 			//2、创建一个input的dom节点   var input=$("<input value='' />");
 			var input = $("<input style='width:60px'  value='' />");
 			// 3、把input放在el里面   $(this).html(input);
@@ -107,68 +103,5 @@ var baseApp = {
 			})
 		})
 
-	},
-
-
-	changePath: function () {
-		/*
-		1、获取el里面的值  var spanNum=$(this).html()
-
-
-		2、创建一个input的dom节点   var input=$("<input value='' />");
-
-
-		3、把input放在el里面   $(this).html(input);
-
-
-		4、让input获取焦点  给input赋值    $(input).trigger('focus').val(val);
-
-
-		5、点击input的时候阻止冒泡
-
-					$(input).click(function(e){
-						e.stopPropagation();
-					})
-
-		6、鼠标离开的时候给span赋值,并触发ajax请求
-
-			$(input).blur(function(){
-				var inputNum=$(this).val();
-				spanEl.html(inputNum);
-				触发ajax请求
-
-			})
-		*/
-
-		$(".chSpanPath").click(function () {
-			// 1、获取el 以及el里面的属性值
-			var id = $(this).attr("data-id")
-			var table = $(this).attr("data-table")
-			var field = $(this).attr("data-field")
-			var num = $(this).html().trim()
-			var spanEl = $(this)
-			console.log(num)
-			//2、创建一个input的dom节点   var input=$("<input value='' />");
-			var input = $("<input style='width:60px'  value='' />");
-			// 3、把input放在el里面   $(this).html(input);
-			$(this).html(input);
-			//4、让input获取焦点  给input赋值    $(input).trigger('focus').val(val);
-			$(input).trigger("focus").val(num);
-			//5、点击input的时候阻止冒泡
-			$(input).click(function (e) {
-				e.stopPropagation();
-			})
-			//6、鼠标离开的时候给span赋值,并触发ajax请求
-			$(input).blur(function () {
-				var inputNum = $(this).val()
-				spanEl.html(inputNum)
-				//触发ajax请求
-				$.get("/admin/changePath", {id: id, table: table, field: field, path: inputNum}, function (response) {
-					console.log(response)
-				})
-			})
-		})
 	}
-
-
 }

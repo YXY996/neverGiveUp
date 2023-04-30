@@ -29,3 +29,7 @@ type Goods struct {
 	Status        int
 	AddTime       int
 }
+
+func (Goods) TableName() string {
+	return "goods"
+}
