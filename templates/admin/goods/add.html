@@ -82,7 +82,7 @@
 
                                         {{range $key,$value := .goodsColorList}}
                                         <input type="checkbox" value="{{$value.Id}}" name="goods_color"
-                                            id="color_{{$value.Id}}" />
+                                               id="color_{{$value.Id}}" />
                                         <label for="color_{{$value.Id}}">{{$value.ColorName}}</label>
                                         &nbsp;
                                         {{end}}

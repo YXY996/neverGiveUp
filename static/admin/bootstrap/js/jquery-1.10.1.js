@@ -225,7 +225,7 @@ jQuery.fn = jQuery.prototype = {
 	// Start with an empty selector
 	selector: "",
 
-	// The defaultTool length of a jQuery object is 0
+	// The default length of a jQuery object is 0
 	length: 0,
 
 	toArray: function() {
@@ -1332,7 +1332,7 @@ function assert( fn ) {
 	} catch (e) {
 		return false;
 	} finally {
-		// Remove from its parent by defaultTool
+		// Remove from its parent by default
 		if ( div.parentNode ) {
 			div.parentNode.removeChild( div );
 		}
@@ -2356,7 +2356,7 @@ Expr = Sizzle.selectors = {
 		},
 
 		"selected": function( elem ) {
-			// Accessing this property makes selected-by-defaultTool
+			// Accessing this property makes selected-by-default
 			// options in Safari work properly
 			if ( elem.parentNode ) {
 				elem.parentNode.selectedIndex;
@@ -2986,7 +2986,7 @@ Expr.setFilters = new setFilters();
 // Sort stability
 support.sortStable = expando.split("").sort( sortOrder ).join("") === expando;
 
-// Initialize against the defaultTool document
+// Initialize against the default document
 setDocument();
 
 // Support: Chrome<<14
@@ -3022,7 +3022,7 @@ function createOptions( options ) {
  *	options: an optional list of space-separated options that will change how
  *			the callback list behaves or a more traditional option object
  *
- * By defaultTool a callback list will act like an event callback list and can be
+ * By default a callback list will act like an event callback list and can be
  * "fired" multiple times.
  *
  * Possible options:
@@ -3384,7 +3384,7 @@ jQuery.support = (function( support ) {
 	support.style = /top/.test( a.getAttribute("style") );
 
 	// Make sure that URLs aren't manipulated
-	// (IE normalizes it by defaultTool)
+	// (IE normalizes it by default)
 	support.hrefNormalized = a.getAttribute("href") === "/a";
 
 	// Make sure that element opacity exists
@@ -3396,10 +3396,10 @@ jQuery.support = (function( support ) {
 	// (IE uses styleFloat instead of cssFloat)
 	support.cssFloat = !!a.style.cssFloat;
 
-	// Check the defaultTool checkbox/radio value ("" on WebKit; "on" elsewhere)
+	// Check the default checkbox/radio value ("" on WebKit; "on" elsewhere)
 	support.checkOn = !!input.value;
 
-	// Make sure that a selected-by-defaultTool option has a working selected property.
+	// Make sure that a selected-by-default option has a working selected property.
 	// (WebKit defaults to false instead of true, IE too, if it's in an optgroup)
 	support.optSelected = opt.selected;
 
@@ -4040,7 +4040,7 @@ jQuery.fn.extend({
 		return this.queue( type || "fx", [] );
 	},
 	// Get a promise resolved when queues of a certain type
-	// are emptied (fx is the type by defaultTool)
+	// are emptied (fx is the type by default)
 	promise: function( type, obj ) {
 		var tmp,
 			count = 1,
@@ -4432,7 +4432,7 @@ jQuery.extend({
 					// Support: IE<9
 					// Also clear defaultChecked/defaultSelected (if appropriate)
 					} else {
-						elem[ jQuery.camelCase( "defaultTool-" + name ) ] =
+						elem[ jQuery.camelCase( "default-" + name ) ] =
 							elem[ propName ] = false;
 					}
 
@@ -4451,7 +4451,7 @@ jQuery.extend({
 			set: function( elem, value ) {
 				if ( !jQuery.support.radioValue && value === "radio" && jQuery.nodeName(elem, "input") ) {
 					// Setting the type on a radio button after the value resets the value in IE6-9
-					// Reset value to defaultTool in case type is set after value during creation
+					// Reset value to default in case type is set after value during creation
 					var val = elem.value;
 					elem.setAttribute( "type", value );
 					if ( val ) {
@@ -4527,7 +4527,7 @@ boolHook = {
 
 		// Use defaultChecked and defaultSelected for oldIE
 		} else {
-			elem[ jQuery.camelCase( "defaultTool-" + name ) ] = elem[ name ] = true;
+			elem[ jQuery.camelCase( "default-" + name ) ] = elem[ name ] = true;
 		}
 
 		return name;
@@ -4553,7 +4553,7 @@ jQuery.each( jQuery.expr.match.bool.source.match( /\w+/g ), function( i, name ) 
 		function( elem, name, isXML ) {
 			return isXML ?
 				undefined :
-				elem[ jQuery.camelCase( "defaultTool-" + name ) ] ?
+				elem[ jQuery.camelCase( "default-" + name ) ] ?
 					name.toLowerCase() :
 					null;
 		};
@@ -4667,7 +4667,7 @@ if ( !jQuery.support.style ) {
 	};
 }
 
-// Safari mis-reports the defaultTool selected property of an option
+// Safari mis-reports the default selected property of an option
 // Accessing the parent's selectedIndex property fixes it
 if ( !jQuery.support.optSelected ) {
 	jQuery.propHooks.selected = {
@@ -5036,7 +5036,7 @@ jQuery.event = {
 		}
 		event.type = type;
 
-		// If nobody prevented the defaultTool action, do it now
+		// If nobody prevented the default action, do it now
 		if ( !onlyHandlers && !event.isDefaultPrevented() ) {
 
 			if ( (!special._default || special._default.apply( eventPath.pop(), data ) === false) &&
@@ -5044,7 +5044,7 @@ jQuery.event = {
 
 				// Call a native DOM method on the target with the same name name as the event.
 				// Can't use an .isFunction() check here because IE6/7 fails that test.
-				// Don't do defaultTool actions on window, that's where global variables be (#6170)
+				// Don't do default actions on window, that's where global variables be (#6170)
 				if ( ontype && elem[ type ] && !jQuery.isWindow( elem ) ) {
 
 					// Don't re-trigger an onFOO event when we call its FOO() method
@@ -5337,7 +5337,7 @@ jQuery.event = {
 	simulate: function( type, elem, event, bubble ) {
 		// Piggyback on a donor event to simulate a different one.
 		// Fake originalEvent to avoid donor's stopPropagation, but if the
-		// simulated event prevents defaultTool then we do the same on the donor.
+		// simulated event prevents default then we do the same on the donor.
 		var e = jQuery.extend(
 			new jQuery.Event(),
 			event,
@@ -6432,7 +6432,7 @@ function fixCloneNodeIssues( src, dest ) {
 			dest.value = src.value;
 		}
 
-	// IE6-8 fails to return the selected option to the defaultTool selected
+	// IE6-8 fails to return the selected option to the default selected
 	// state when cloning options
 	} else if ( nodeName === "option" ) {
 		dest.defaultSelected = dest.selected = src.defaultSelected;
@@ -6886,7 +6886,7 @@ function showHide( elements, show ) {
 			}
 
 			// Set elements which have been overridden with display: none
-			// in a stylesheet to whatever the defaultTool browser style is
+			// in a stylesheet to whatever the default browser style is
 			// for such an element
 			if ( elem.style.display === "" && isHidden( elem ) ) {
 				values[ index ] = jQuery._data( elem, "olddisplay", css_defaultDisplay(elem.nodeName) );
@@ -6961,7 +6961,7 @@ jQuery.fn.extend({
 });
 
 jQuery.extend({
-	// Add in style property hooks for overriding the defaultTool
+	// Add in style property hooks for overriding the default
 	// behavior of getting and setting a style property
 	cssHooks: {
 		opacity: {
@@ -7153,7 +7153,7 @@ if ( window.getComputedStyle ) {
 			style = elem.style;
 
 		// Avoid setting ret to empty string here
-		// so we don't defaultTool to auto
+		// so we don't default to auto
 		if ( ret == null && style && style[ name ] ) {
 			ret = style[ name ];
 		}
@@ -7280,7 +7280,7 @@ function getWidthOrHeight( elem, name, extra ) {
 	) + "px";
 }
 
-// Try to determine the defaultTool display value of an element
+// Try to determine the default display value of an element
 function css_defaultDisplay( nodeName ) {
 	var doc = document,
 		display = elemdisplay[ nodeName ];
@@ -7305,7 +7305,7 @@ function css_defaultDisplay( nodeName ) {
 			iframe.detach();
 		}
 
-		// Store the correct defaultTool display
+		// Store the correct default display
 		elemdisplay[ nodeName ] = display;
 	}
 

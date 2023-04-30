@@ -24,7 +24,6 @@ func InitAuthMiddleWare(c *gin.Context) {
 		//将string 断言后的userInfo信息 传入userInfoStruct 切片
 		err := json.Unmarshal([]byte(userInfoStr), &userInfoStruct)
 		if err != nil || !(len(userInfoStruct) > 0 && userInfoStruct[0].Username != "") {
-			fmt.Println(" 可能不存在userInfo 可能是登录界面")
 			//如果不是以下路径进行跳转
 			if splitPathname != "/admin/login" && splitPathname != "/admin/doLogin" && splitPathname != "/admin/captcha" {
 				fmt.Println("进行了一次重定向")
@@ -35,7 +34,7 @@ func InitAuthMiddleWare(c *gin.Context) {
 			fmt.Println("登录成功 进行权限判断")
 			//根据路径url 获取权限id
 			urlPath := strings.Replace(splitPathname, "/admin/", "", 1)
-			fmt.Printf("urlPath = %v\n", urlPath)
+			fmt.Printf("urlPath :%s\n", urlPath)
 			//如果不是是超级管理员 且 路径不是一些排除在路径 进行权限判断
 			if userInfoStruct[0].IsSuper == 0 && !excludeAuthPath("/"+urlPath) {
 				// 1、根据角色获取当前角色的权限列表,然后把权限id放在一个map类型的对象里面
