@@ -5,13 +5,17 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
+	"gopkg.in/ini.v1"
 	"html/template"
 	"io"
-	"log"
+	"mime/multipart"
 	"os"
 	"path"
+	"reflect"
 	"strconv"
 	"time"
+
+	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 )
 
 // 时间戳转换成日期
@@ -82,10 +86,43 @@ func String(n int) string {
 	return str
 }
 
+// 通过列获取值 反射 读取界面
+func GetSettingFromColumn(columnName string) string {
+	//redis file
+	setting := Setting{}
+	DB.First(&setting)
+	//反射来获取
+	v := reflect.ValueOf(setting)
+	val := v.FieldByName(columnName).String()
+	return val
+}
+
 // 上传图片
 func UploadImg(c *gin.Context, picName string) (string, error) {
+	ossStatus := GetOssStatus()
+	if ossStatus == 1 {
+		return OssUploadImg(c, picName)
+	} else {
+		return LocalUploadImg(c, picName)
+	}
+}
+
+func GetOssStatus() int {
+	config, iniErr := ini.Load("./conf/app.ini")
+	if iniErr != nil {
+		fmt.Printf("Fail to read file: %v", iniErr)
+		os.Exit(1)
+	}
+	ossStatus, _ := Int(config.Section("oss").Key("status").String())
+	return ossStatus
+}
+
+// 上传图片到本地
+func LocalUploadImg(c *gin.Context, picName string) (string, error) {
 	// 1、获取上传的文件
 	file, err := c.FormFile(picName)
+
+	fmt.Println(file)
 	if err != nil {
 		return "", err
 	}
@@ -108,7 +145,7 @@ func UploadImg(c *gin.Context, picName string) (string, error) {
 	day := GetDay()
 	dir := "./static/upload/" + day
 
-	err1 := os.MkdirAll(dir, 0777)
+	err1 := os.MkdirAll(dir, 0755)
 	if err1 != nil {
 		fmt.Println(err1)
 		return "", err1
@@ -119,11 +156,73 @@ func UploadImg(c *gin.Context, picName string) (string, error) {
 
 	// 5、执行上传
 	dst := path.Join(dir, fileName)
-	fmt.Printf("fileName = %v\n", fileName)
-	fmt.Printf("dst= %v\n", dst)
-	err = c.SaveUploadedFile(file, dst)
+	c.SaveUploadedFile(file, dst)
+	return dst, nil
+
+}
+
+// 上传图片到Oss
+func OssUploadImg(c *gin.Context, picName string) (string, error) {
+	// 1、获取上传的文件
+	file, err := c.FormFile(picName)
+
 	if err != nil {
-		log.Printf("err : %v\n", err)
+		return "", err
+	}
+
+	// 2、获取后缀名 判断类型是否正确  .jpg .png .gif .jpeg
+	extName := path.Ext(file.Filename)
+	allowExtMap := map[string]bool{
+		".jpg":  true,
+		".png":  true,
+		".gif":  true,
+		".jpeg": true,
+	}
+
+	if _, ok := allowExtMap[extName]; !ok {
+		return "", errors.New("文件后缀名不合法")
+	}
+
+	// 3、定义图片保存目录  static/upload/20210624
+
+	day := GetDay()
+	dir := "static/upload/" + day
+
+	// 4、生成文件名称和文件保存的目录   111111111111.jpeg
+	fileName := strconv.FormatInt(GetUnixNano(), 10) + extName
+
+	// 5、执行上传
+	dst := path.Join(dir, fileName)
+
+	OssUplod(file, dst)
+	return dst, nil
+
+}
+
+// Oss上传
+func OssUplod(file *multipart.FileHeader, dst string) (string, error) {
+
+	f, err := file.Open()
+	if err != nil {
+		return "", err
+	}
+	defer f.Close()
+
+	// 创建OSSClient实例。
+	client, err := oss.New("oss-cn-beijing.aliyuncs.com", "GJoqWHXB2c9S9gwP", "Lgf3weXuWITUUb17vDJfveg1jmKEe9")
+	if err != nil {
+		return "", err
+	}
+
+	// 获取存储空间。
+	bucket, err := client.Bucket("yxy-train")
+	if err != nil {
+		return "", err
+	}
+
+	// 上传文件流。
+	err = bucket.PutObject(dst, f)
+	if err != nil {
 		return "", err
 	}
 	return dst, nil
