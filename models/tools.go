@@ -8,10 +8,13 @@ import (
 	"html/template"
 	"io"
 	"log"
+	"mime/multipart"
 	"os"
 	"path"
 	"strconv"
 	"time"
+
+	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 )
 
 // 时间戳转换成日期
@@ -124,6 +127,73 @@ func UploadImg(c *gin.Context, picName string) (string, error) {
 	err = c.SaveUploadedFile(file, dst)
 	if err != nil {
 		log.Printf("err : %v\n", err)
+		return "", err
+	}
+	return dst, nil
+}
+
+// 上传图片到Oss
+func OssUploadImg(c *gin.Context, picName string) (string, error) {
+	// 1、获取上传的文件
+	file, err := c.FormFile(picName)
+
+	if err != nil {
+		return "", err
+	}
+
+	// 2、获取后缀名 判断类型是否正确  .jpg .png .gif .jpeg
+	extName := path.Ext(file.Filename)
+	allowExtMap := map[string]bool{
+		".jpg":  true,
+		".png":  true,
+		".gif":  true,
+		".jpeg": true,
+	}
+
+	if _, ok := allowExtMap[extName]; !ok {
+		return "", errors.New("文件后缀名不合法")
+	}
+
+	// 3、定义图片保存目录  static/upload/20210624
+
+	day := GetDay()
+	dir := "static/upload/" + day
+
+	// 4、生成文件名称和文件保存的目录   111111111111.jpeg
+	fileName := strconv.FormatInt(GetUnixNano(), 10) + extName
+
+	// 5、执行上传
+	dst := path.Join(dir, fileName)
+
+	OssUplod(file, dst)
+	return dst, nil
+
+}
+
+// Oss上传
+func OssUplod(file *multipart.FileHeader, dst string) (string, error) {
+
+	f, err := file.Open()
+	if err != nil {
+		return "", err
+	}
+	defer f.Close()
+
+	// 创建OSSClient实例。
+	client, err := oss.New("oss-cn-beijing.aliyuncs.com", "GJoqWHXB2c9S9gwP", "Lgf3weXuWITUUb17vDJfveg1jmKEe9")
+	if err != nil {
+		return "", err
+	}
+
+	// 获取存储空间。
+	bucket, err := client.Bucket("yxy-train")
+	if err != nil {
+		return "", err
+	}
+
+	// 上传文件流。
+	err = bucket.PutObject(dst, f)
+	if err != nil {
 		return "", err
 	}
 	return dst, nil

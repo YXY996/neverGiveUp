@@ -93,6 +93,9 @@ func AdminRoutersInit(r *gin.Engine) {
 		adminRouters.POST("/nav/doEdit", admin.NavController{}.DoEdit)
 
 		adminRouters.GET("/nav/delete", admin.NavController{}.Delete)
+
+		adminRouters.GET("/setting", admin.SettingController{}.Index)
+		adminRouters.POST("/setting/doEdit", admin.SettingController{}.DoEdit)
 	}
 
 }

@@ -6,7 +6,7 @@ type Setting struct {
 	SiteLogo        string
 	SiteKeywords    string `form:"site_keywords"`
 	SiteDescription string `form:"site_description"`
-	NoPicture       string
+	NoPicture       string //默认图片
 	SiteIcp         string `form:"site_icp"`
 	SiteTel         string `form:"site_tel"`
 	SearchKeywords  string `form:"search_keywords"`
