@@ -1,11 +1,13 @@
 package defaultTool
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	. "github.com/hunterhug/go_image"
 	qrcode "github.com/skip2/go-qrcode"
 	"io/ioutil"
 	"neverGiveUp/controllers/admin"
+	"neverGiveUp/models"
 )
 
 type DefaultController struct {
@@ -13,6 +15,8 @@ type DefaultController struct {
 }
 
 func (con DefaultController) Index(c *gin.Context) {
+	fmt.Println("-----------")
+	fmt.Println(models.GetSettingFromColumn("SiteTitle"))
 	c.String(200, "首页")
 }
 

@@ -5,12 +5,13 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
+	"gopkg.in/ini.v1"
 	"html/template"
 	"io"
-	"log"
 	"mime/multipart"
 	"os"
 	"path"
+	"reflect"
 	"strconv"
 	"time"
 
@@ -85,10 +86,43 @@ func String(n int) string {
 	return str
 }
 
+// 通过列获取值 反射 读取界面
+func GetSettingFromColumn(columnName string) string {
+	//redis file
+	setting := Setting{}
+	DB.First(&setting)
+	//反射来获取
+	v := reflect.ValueOf(setting)
+	val := v.FieldByName(columnName).String()
+	return val
+}
+
 // 上传图片
 func UploadImg(c *gin.Context, picName string) (string, error) {
+	ossStatus := GetOssStatus()
+	if ossStatus == 1 {
+		return OssUploadImg(c, picName)
+	} else {
+		return LocalUploadImg(c, picName)
+	}
+}
+
+func GetOssStatus() int {
+	config, iniErr := ini.Load("./conf/app.ini")
+	if iniErr != nil {
+		fmt.Printf("Fail to read file: %v", iniErr)
+		os.Exit(1)
+	}
+	ossStatus, _ := Int(config.Section("oss").Key("status").String())
+	return ossStatus
+}
+
+// 上传图片到本地
+func LocalUploadImg(c *gin.Context, picName string) (string, error) {
 	// 1、获取上传的文件
 	file, err := c.FormFile(picName)
+
+	fmt.Println(file)
 	if err != nil {
 		return "", err
 	}
@@ -111,7 +145,7 @@ func UploadImg(c *gin.Context, picName string) (string, error) {
 	day := GetDay()
 	dir := "./static/upload/" + day
 
-	err1 := os.MkdirAll(dir, 0777)
+	err1 := os.MkdirAll(dir, 0755)
 	if err1 != nil {
 		fmt.Println(err1)
 		return "", err1
@@ -122,14 +156,9 @@ func UploadImg(c *gin.Context, picName string) (string, error) {
 
 	// 5、执行上传
 	dst := path.Join(dir, fileName)
-	fmt.Printf("fileName = %v\n", fileName)
-	fmt.Printf("dst= %v\n", dst)
-	err = c.SaveUploadedFile(file, dst)
-	if err != nil {
-		log.Printf("err : %v\n", err)
-		return "", err
-	}
+	c.SaveUploadedFile(file, dst)
 	return dst, nil
+
 }
 
 // 上传图片到Oss
