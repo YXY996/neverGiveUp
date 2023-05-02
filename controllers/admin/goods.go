@@ -299,7 +299,7 @@ func (con GoodsController) Edit(c *gin.Context) {
 	}
 
 	//获取上一页的地址
-	fmt.Println(c.Request.Referer())
+	fmt.Println("上级请求页面", c.Request.Referer())
 
 	c.HTML(http.StatusOK, "admin/goods/edit.html", gin.H{
 		"goods":          goods,
