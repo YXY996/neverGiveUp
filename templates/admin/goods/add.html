@@ -222,6 +222,7 @@
             url: '/admin/goods/imageUpload',
             success: function (response) {
                 // console.info( data );
+                //上传图片 得到一个图库列表  文件路径的切片
                 var photoStr = '<input type="hidden" name="goods_image_list" value=' + response.link + ' />';
                 $("#photoList").append(photoStr)
             },
