@@ -227,3 +227,43 @@ func OssUplod(file *multipart.FileHeader, dst string) (string, error) {
 	}
 	return dst, nil
 }
+
+// 格式化输出图片
+func FormatImg(str string) string {
+	ossStatus := GetOssStatus()
+	fmt.Println(ossStatus)
+	if ossStatus == 1 {
+		return GetSettingFromColumn("OssDomain") + str
+	} else {
+		return "/" + str
+	}
+}
+
+func Sub(a int, b int) int {
+	return a - b
+}
+
+// Substr截取字符串
+func Substr(str string, start int, end int) string {
+	rs := []rune(str)
+	rl := len(rs)
+	if start < 0 {
+		start = 0
+	}
+	if start > rl {
+		start = 0
+	}
+
+	if end < 0 {
+		end = rl
+	}
+	if end > rl {
+		end = rl
+	}
+	if start > end {
+		start, end = end, start
+	}
+
+	return string(rs[start:end])
+
+}

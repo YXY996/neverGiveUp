@@ -14,6 +14,9 @@ func main() {
 	r.SetFuncMap(template.FuncMap{
 		"UnixToTime": models.UnixToTime,
 		"Str2Html":   models.Str2Html,
+		"FormatImg":  models.FormatImg,
+		"Sub":        models.Sub,
+		"Substr":     models.Substr,
 	})
 	r.LoadHTMLGlob("templates/**/**/*")
 	r.Static("/static", "./static")
@@ -23,5 +26,6 @@ func main() {
 
 	routers.AdminRoutersInit(r)
 	routers.DefaultRoutersInit(r)
+
 	r.Run(":9999")
 }
