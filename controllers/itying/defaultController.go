@@ -20,7 +20,6 @@ func (con DefaultController) Index(c *gin.Context) {
 	models.DB.Where("status=1 AND focus_type=1").Find(&focusList)
 	//3、获取分类的数据
 	goodsCateList := []models.GoodsCate{}
-	//https://gorm.io/zh_CN/docs/preload.html
 	models.DB.Where("pid = 0 AND status=1").Order("sort DESC").Preload("GoodsCateItems", func(db *gorm.DB) *gorm.DB {
 		return db.Where("goods_cate.status=1").Order("goods_cate.sort DESC")
 	}).Find(&goodsCateList)

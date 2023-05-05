@@ -231,7 +231,7 @@ func OssUplod(file *multipart.FileHeader, dst string) (string, error) {
 // 格式化输出图片
 func FormatImg(str string) string {
 	ossStatus := GetOssStatus()
-	fmt.Println(ossStatus)
+	//fmt.Println(ossStatus)
 	if ossStatus == 1 {
 		return GetSettingFromColumn("OssDomain") + str
 	} else {
