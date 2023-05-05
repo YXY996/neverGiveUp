@@ -47,7 +47,7 @@ func init() {
 
 type cacheDb struct{}
 
-func (c *cacheDb) Set(key string, value interface{}, expiration int) {
+func (c cacheDb) Set(key string, value interface{}, expiration int) {
 	if redisEnable {
 		v, err := json.Marshal(value)
 		if err == nil {
@@ -56,7 +56,7 @@ func (c *cacheDb) Set(key string, value interface{}, expiration int) {
 	}
 }
 
-func (c *cacheDb) Get(key string, obj interface{}) bool {
+func (c cacheDb) Get(key string, obj interface{}) bool {
 	if redisEnable {
 		valueStr, err1 := rdbClient.Get(ctx, key).Result()
 		//如果数据库连不上的话 也会缓存到redis中
@@ -70,8 +70,10 @@ func (c *cacheDb) Get(key string, obj interface{}) bool {
 }
 
 // 清除缓存
-func (c *cacheDb) FlushAll() {
+func (c cacheDb) FlushAll() {
 	if redisEnable {
 		rdbClient.FlushAll(ctx)
 	}
 }
+
+var CacheDb = cacheDb{}
